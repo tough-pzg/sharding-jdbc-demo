@@ -13,7 +13,7 @@ import java.util.Properties;
  */
 public class SnowFlakeUtils {
 
-    public static final SnowflakeKeyGenerateAlgorithm KEY_GENERATOR = new SnowflakeKeyGenerateAlgorithm();
+    private static final SnowflakeKeyGenerateAlgorithm KEY_GENERATOR = new SnowflakeKeyGenerateAlgorithm();
 
     static {
         Properties props = new Properties();
