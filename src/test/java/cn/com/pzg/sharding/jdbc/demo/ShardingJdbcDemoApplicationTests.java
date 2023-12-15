@@ -1,7 +1,9 @@
 package cn.com.pzg.sharding.jdbc.demo;
 
 import cn.com.pzg.sharding.jdbc.demo.bean.OrderInfo;
+import cn.com.pzg.sharding.jdbc.demo.bean.User;
 import cn.com.pzg.sharding.jdbc.demo.mapper.OrderInfoMapper;
+import cn.com.pzg.sharding.jdbc.demo.mapper.UserMapper;
 import com.alibaba.fastjson.JSON;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +18,35 @@ class ShardingJdbcDemoApplicationTests {
 
     @Autowired
     private OrderInfoMapper orderInfoMapper;
+    @Autowired
+    private UserMapper userMapper;
+
+    @Test
+    public void testGetUser(){
+        User byNameId = userMapper.getById(5L);
+        System.out.println("根据userId:" + JSON.toJSONString(byNameId));
+
+        List<User> byNameLike = userMapper.getByNameLike("张");
+        System.out.println("根据姓名模糊查询:" + JSON.toJSONString(byNameLike));
+
+        System.out.println("----------------------");
+    }
+
+    @Test
+    public void testInsertUser(){
+        for (long i = 0; i < 10; i++) {
+            User user = new User();
+            user.setUserId(i);
+            user.setUserName("张三");
+            user.setAge(18);
+            user.setEamil("123@qq.com");
+            user.setAddress("上海市普陀区");
+            userMapper.insert(user);
+        }
+
+        System.out.println("----------------------");
+    }
+
 
     @Test
     public void testGet(){
