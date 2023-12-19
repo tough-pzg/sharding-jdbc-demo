@@ -29,6 +29,12 @@ public interface UserMapper {
             " );")
     Integer insert(@Param("user") User user);
 
+    @Insert(" <foreach collection=\"list\"  item=\"row\" separator=\";\">\n" +
+            "    INSERT INTO user (user_id, user_name, age, address, eamil, create_time )\n" +
+            "    VALUES (#{row.userId},#{row.userName},#{row.age}, #{row.address},#{row.eamil},#{row.createTime});\n" +
+            " </foreach>")
+    void insertBatch(@Param("list") List<User> list);
+
     @Select("SELECT * from user WHERE user_name like CONCAT('%',#{userName} ,'%')")
     List<User> getByNameLike(@Param("userName") String userName);
 
