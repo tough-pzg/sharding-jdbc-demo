@@ -28,19 +28,35 @@ class ShardingJdbcDemoApplicationTests {
     private PersonMapper personMapper;
 
     @Test
+    public void test(){
+        // 先使用不分表的数据源执行批量sql
+        testBatchSql();
+
+        // 测试使用 分表数据源新增
+        testInsertOrder();
+        System.out.println("使用sharding-jdbc 循环新增逻辑表");
+
+        // 测试使用 分表数据源查询
+        testGetOrder();
+        System.out.println("使用sharding-jdbc 查询逻辑表");
+
+    }
+
+    @Test
     public void testBatchSql(){
+        List<String> sexList = Arrays.asList("男", "女");
         List<Person> list = new ArrayList<>();
         for (int i = 0; i < 2; i++) {
-            Person person = new Person();
-            person.setName(UUID.randomUUID().toString());
-            person.setAge(1);
-            person.setDeleted(0);
-            person.setSex("男");
-            list.add(person);
+            Person temp = new Person();
+            temp.setAge(20);
+            temp.setName(UUID.randomUUID().toString());
+            temp.setSex(sexList.get(i % 2));
+            temp.setDeleted(0);
+            list.add(temp);
         }
 
         personMapper.insertBatch(list);
-
+        System.out.println("----------使用默认数据源批量插入成功----------");
     }
 
     @Test
@@ -92,7 +108,7 @@ class ShardingJdbcDemoApplicationTests {
 
 
     @Test
-    public void testGet() {
+    public void testGetOrder() {
         List<OrderInfo> all = orderInfoMapper.getAll();
         System.out.println("所有数据：" + JSON.toJSONString(all));
 
@@ -106,9 +122,9 @@ class ShardingJdbcDemoApplicationTests {
     }
 
     @Test
-    void contextLoads() {
+    public void testInsertOrder() {
         List<String> projectNameList = Arrays.asList("hfw", "why");
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 4; i++) {
             OrderInfo orderInfo = new OrderInfo();
 //            orderInfo.setOrderId("123456" + i);
             orderInfo.setOrderName("测试");
@@ -117,7 +133,6 @@ class ShardingJdbcDemoApplicationTests {
             orderInfo.setProjectName(projectNameList.get(i % 2));
             orderInfo.setUserId(10086L);
             orderInfoMapper.insert(orderInfo);
-            System.out.println("本次生成的ID:" + orderInfo.getOrderId());
         }
     }
 

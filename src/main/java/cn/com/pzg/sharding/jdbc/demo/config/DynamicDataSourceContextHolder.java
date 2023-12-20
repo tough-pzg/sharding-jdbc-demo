@@ -14,6 +14,7 @@ public class DynamicDataSourceContextHolder {
 
     public static void setDataSource(String dataSourceType) {
         CONTEXT_HOLDER.set(dataSourceType);
+        System.out.println("设置数据源为：" + dataSourceType);
     }
 
     public static String getDataSource() {

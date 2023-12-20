@@ -1,5 +1,6 @@
 package cn.com.pzg.sharding.jdbc.demo.mapper;
 
+import cn.com.pzg.sharding.jdbc.demo.annotation.UseDataSource;
 import cn.com.pzg.sharding.jdbc.demo.bean.OrderInfo;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -15,6 +16,7 @@ import java.util.List;
  * @description
  * @since 2023/12/13
  */
+@UseDataSource("sharding")
 @Mapper
 public interface OrderInfoMapper {
 

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.com.pzg.sharding.jdbc.demo.mapper.PersonMapper">
+
+
+    <insert id="insertBatch">
+        <foreach collection="rows" item="row" separator=";">
+            insert into person(age,name,sex,deleted)
+            values (#{row.age},
+                    #{row.name},
+                    #{row.sex},
+                    #{row.deleted})
+        </foreach>
+    </insert>
+</mapper>

@@ -1,12 +1,12 @@
 package cn.com.pzg.sharding.jdbc.demo.config;
 
 import cn.com.pzg.sharding.jdbc.demo.aspect.DynamicDataSourceAspect;
-import org.apache.shardingsphere.driver.jdbc.adapter.AbstractDataSourceAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.context.annotation.Primary;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -31,11 +31,13 @@ public class DynamicDataSourceConfig {
     }
 
     @Bean
+    @Primary
     public DynamicDataSource dynamicDataSource(DynamicDataSourceRegister register){
 
         Map<Object, Object> targetDataSources = new HashMap<>();
         targetDataSources.put("sharding",dataSource);
-        return new DynamicDataSource(register.getDefaultDataSource(),targetDataSources);
+        DataSource defaultDataSource = register.getDefaultDataSource();
+        return new DynamicDataSource(defaultDataSource,targetDataSources);
     }
 
     @Bean
