@@ -1,0 +1,68 @@
+dataSources:
+  # 配置 一个数据源 名为   default
+  default:
+    dataSourceClassName: com.zaxxer.hikari.HikariDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    jdbcUrl: jdbc:mysql://localhost:3306/sharding-test?serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    username: root
+    password: 123456
+
+rules:
+  # 分片配置
+  - !SHARDING
+    tables:
+      # user表分片
+      user:
+        # 真实表节点个数
+        actualDataNodes: default.user_${0..1}
+        # 分表策略
+        tableStrategy:
+          standard:
+            # 分表字段
+            shardingColumn: user_id
+            # 逻辑表名称 （后续代码在的sql就使用这个表名）
+            shardingAlgorithmName: user
+      order_info:
+        actualDataNodes: default.order_info_${['hfw','why']}
+        tableStrategy:
+          standard:
+            shardingColumn: project_name
+            shardingAlgorithmName: order_info
+        keyGenerateStrategy:
+          column: order_id
+          keyGeneratorName: pzg-snowflake
+    # 分片算法
+    shardingAlgorithms:
+      # 逻辑表 user 的分片算法
+      user:
+        # 类型为 inline 表达式
+        type: INLINE
+        props:
+          # 分片的 inline 表达式
+          algorithm-expression: user_${user_id % 2}
+          allow-range-query-with-inline-sharding: true
+      order_info:
+        type: INLINE
+        props:
+          algorithm-expression: order_info_${project_name}
+          allow-range-query-with-inline-sharding: true
+    # 自增键生成器
+    keyGenerators:
+      # 自定义的名称
+      pzg-snowflake:
+        type: SNOWFLAKE
+        props:
+          # 雪花算法中的 机器id，取值 1~1024
+          worker-id: 123
+  # 单表配置（无需分表的表）
+  - !SINGLE
+    tables:
+      # （mysql风格）加载 default 下所有的单表
+      - default.*
+      # （pgsql风格）加载 default 下所有的单表
+      #- default.public.*
+
+# 全局属性配置
+props:
+  # 显示 sql
+  sql-show: true
